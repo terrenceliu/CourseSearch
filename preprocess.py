@@ -1,4 +1,4 @@
-from collections import defaultdict
+import cProfile
 import pandas as pd
 from nltk import sent_tokenize, word_tokenize, wordpunct_tokenize
 from nltk.corpus import stopwords
@@ -105,18 +105,20 @@ class CourseCatalog:
 
 def create_tagged_document(catalog):
 	"""
-	Create tagged document for Doc2Vec model from Course Catalog
+	Create tagged document for Doc2Vec trainedmodel from Course Catalog
 	:param catalog:
 	:type catalog: CourseCatalog
 	:return:
 	"""
 	documents = []
+	sentences = []
 	for ele in catalog.training_set:
 		sent = ele[0]
-		tag = ele[1]
+		tag = [str(ele[1])]
 		instance = doc2vec.TaggedDocument(sent, tag)
 		documents.append(instance)
-	return documents
+		sentences.append(sent)
+	return documents, sentences
 
 def main():
 	# Init CourseCatalog
@@ -124,6 +126,7 @@ def main():
 		Catalog = CourseCatalog(f)
 	
 	assert isinstance(Catalog.df, pd.DataFrame)
+	
 	# Tweak
 	Catalog.fill_na()
 	Catalog.tag_sentences()
@@ -132,13 +135,15 @@ def main():
 	Catalog.dump_pickle()
 	
 	# Create Tagged Document for Doc2Vec Model
-	documents = create_tagged_document(Catalog)
+	documents, sentences = create_tagged_document(Catalog)
 	with open('pickle/TaggedDocuments', 'w') as f:
 		pickle.dump(documents, f)
+	with open('pickle/Sentences', 'w') as f:
+		pickle.dump(sentences,f)
 	
 def test():
 	# Load from pickle
 	with open('pickle/Catalog', 'r') as f:
 		Catalog = pickle.load(f)        # type: CourseCatalog
 
-main()
+cProfile.run('main()')
