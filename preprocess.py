@@ -7,7 +7,11 @@ import cPickle as pickle
 
 STOP_WORDS = stopwords.words('english')
 
-class CourseCatalog(object):
+class CourseCatalog:
+	"""
+	:type df: pd.Dataframe
+	:type training_set: list
+	"""
 	def __init__(self, f):
 		"""
 		
@@ -16,7 +20,7 @@ class CourseCatalog(object):
 		:type self.catalog: pd.Dataframe
 		"""
 		
-		self.df = pd.read_excel(f)      # type: pd.Dataframe
+		self.df = pd.read_excel(f)
 		self.training_set = []          # type: list
 		
 	def fill_na(self):
