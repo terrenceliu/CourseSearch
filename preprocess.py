@@ -2,6 +2,7 @@ from collections import defaultdict
 import pandas as pd
 from nltk import sent_tokenize, word_tokenize, wordpunct_tokenize
 from nltk.corpus import stopwords
+import pickle
 
 STOP_WORDS = stopwords.words('english')
 
@@ -15,7 +16,7 @@ class CourseCatalog(object):
 		"""
 		
 		self.df = pd.read_excel(f)      # type: pd.Dataframe
-		self.training_set = []
+		self.training_set = []          # type: list
 		
 	def fill_na(self):
 		self.df = self.df.fillna('')
@@ -79,22 +80,41 @@ class CourseCatalog(object):
 			result.append((sent, tag))
 		self.training_set = result
 	
-	def stem_words(sel):
+	def stem_words(self):
 		"""
 		Stemming every word into unified form
 		:return:
 		"""
 	
+	def course_code(self):
+		"""
+		Return a list of course code
+		:return:
+		"""
+		
+	
 def test():
-	with open('data/catalog.xlsx', 'r') as f:
-		Catalog = CourseCatalog(f)
+	# Init CourseCatalog
+	# with open('data/catalog.xlsx', 'r') as f:
+	# 	Catalog = CourseCatalog(f)
+	
+	# Dump to pickle
+	# with open('pickle/Catalog', 'w') as f:
+	# 	pickle.dump(Catalog, f)
+	
+	# Load from pickle
+	with open('pickle/Catalog', 'r') as f:
+		Catalog = pickle.load(f)
+		assert isinstance(Catalog, CourseCatalog)
+	
 	assert isinstance(Catalog.df, pd.DataFrame)
 	
-	Catalog.fill_na()
-	Catalog.tag_sentences()
-	Catalog.tokenize_sentence()
-	# Catalog.remove_stop_words(STOP_WORDS)
-	print Catalog.training_set[-200:-180]
+	
+	# Catalog.fill_na()
+	# Catalog.tag_sentences()
+	# Catalog.tokenize_sentence()
+	# # Catalog.remove_stop_words(STOP_WORDS)
+	# print Catalog.training_set[-200:-180]
 	
 	
 	
