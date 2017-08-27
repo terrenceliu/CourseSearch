@@ -2,7 +2,8 @@ from collections import defaultdict
 import pandas as pd
 from nltk import sent_tokenize, word_tokenize, wordpunct_tokenize
 from nltk.corpus import stopwords
-import pickle
+from gensim.models import doc2vec
+import cPickle as pickle
 
 STOP_WORDS = stopwords.words('english')
 
@@ -91,31 +92,49 @@ class CourseCatalog(object):
 		Return a list of course code
 		:return:
 		"""
-		
+		return self.df.index.values
 	
-def test():
+	def dump_pickle(self):
+		with open('pickle/Catalog', 'w') as f:
+			pickle.dump(self, f)
+
+
+def create_tagged_document(catalog):
+	"""
+	Create tagged document for Doc2Vec model from Course Catalog
+	:param catalog:
+	:type catalog: CourseCatalog
+	:return:
+	"""
+	documents = []
+	for ele in catalog.training_set:
+		sent = ele[0]
+		tag = ele[1]
+		instance = doc2vec.TaggedDocument(sent, tag)
+		documents.append(instance)
+	return documents
+
+def main():
 	# Init CourseCatalog
-	# with open('data/catalog.xlsx', 'r') as f:
-	# 	Catalog = CourseCatalog(f)
-	
-	# Dump to pickle
-	# with open('pickle/Catalog', 'w') as f:
-	# 	pickle.dump(Catalog, f)
-	
-	# Load from pickle
-	with open('pickle/Catalog', 'r') as f:
-		Catalog = pickle.load(f)
-		assert isinstance(Catalog, CourseCatalog)
+	with open('data/catalog.xlsx', 'r') as f:
+		Catalog = CourseCatalog(f)
 	
 	assert isinstance(Catalog.df, pd.DataFrame)
+	# Tweak
+	Catalog.fill_na()
+	Catalog.tag_sentences()
+	Catalog.tokenize_sentence()
+	# Catalog.remove_stop_words(STOP_WORDS)
+	Catalog.dump_pickle()
 	
+	# Create Tagged Document for Doc2Vec Model
+	documents = create_tagged_document(Catalog)
+	with open('pickle/TaggedDocuments', 'w') as f:
+		pickle.dump(documents, f)
 	
-	# Catalog.fill_na()
-	# Catalog.tag_sentences()
-	# Catalog.tokenize_sentence()
-	# # Catalog.remove_stop_words(STOP_WORDS)
-	# print Catalog.training_set[-200:-180]
-	
-	
-	
-test()
+def test():
+	# Load from pickle
+	with open('pickle/Catalog', 'r') as f:
+		Catalog = pickle.load(f)        # type: CourseCatalog
+
+main()
