@@ -2,13 +2,7 @@ Folder: data
     -   catalog.xlsx
 
 Folder: pickle
-    -   Catalog
-        Input:      data/catalog.xlsx
-        Process:    fill_na()
-                    tag_sentence()
-                    tokenize_sentence()
-        Type:       preprocess.CourseCatalog
-
+    ( DON'T PUSH MODEL TO GITHUB / FILE SIZE EXCEEDED WARNING )
     -   Model
         Input:      pickle/TaggedDocument
         Process:    doc2vec.Doc2Vec(
@@ -16,6 +10,12 @@ Folder: pickle
                     intersect_word2vec_format(
                         'GoogleNews-vectors-negative300.bin', lockf = 0.0 )
         Type:     doc2vec.Doc2vec
+    -   Catalog
+        Input:      data/catalog.xlsx
+        Process:    fill_na()
+                    tag_sentence()
+                    tokenize_sentence()
+        Type:       preprocess.CourseCatalog
 
     -   Sentences
         Input:      Catalog

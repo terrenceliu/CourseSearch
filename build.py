@@ -60,12 +60,12 @@ def record_model(model, epoch):
 
 def test():
 	logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
-	# m = Model(documents)
-	# m.config()
-	# m.dump_pickle()
+	m = Model(documents)
+	m.config()
+	m.dump_pickle()
 	
 	# load trainedmodel
-	with open('pickle/Model_2', 'r') as f:
+	with open('pickle/Model', 'r') as f:
 		m = pickle.load(f)      # type: Model
 		assert isinstance(m.model, doc2vec.Doc2Vec)
 	
@@ -74,7 +74,6 @@ def test():
 	m = doc2vec.Doc2Vec.load('trainedmodel/epoch3')
 	assert isinstance(m, doc2vec.Doc2Vec)
 	
-	print len(m.docvecs)
 	
 # cProfile.run('test()')
 test()
