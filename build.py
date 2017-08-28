@@ -65,7 +65,7 @@ def test():
 	# m.dump_pickle()
 	
 	# load trainedmodel
-	with open('pickle/Model', 'r') as f:
+	with open('pickle/Model_2', 'r') as f:
 		m = pickle.load(f)      # type: Model
 		assert isinstance(m.model, doc2vec.Doc2Vec)
 	
